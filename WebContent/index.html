@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Java Call</title>
+<script src="http://code.jquery.com/jquery-3.1.1.js"></script>
+
+<script type="text/javascript">
+	$(function() {
+		$("#exec1").click(function() {
+			
+			/* 구현 하세요.  
+			입력된  #words 데이터를 가져와  서버에서 요청하고  
+			그 결과를 #result1에 출력하는 코드를 구현하세요
+			*/
+			
+			var words = $('#words').val();  // form 에 있는값 받아와서 서블릿으로 보내는 것  이때 비동기가 부분적으로 들어간다
+			
+			$.ajax({
+				type: 'get',
+				url: 'main.do?words='+words+'&action=wordCount',   // main.do로 안하고 MainServlet 으로 씀 , Servlet이 하나니까 요청을 구분할 action 을 넘겨줬어야 했는데
+				
+				error: function(xhr, status, message){  // 이런식으로 kind 하게 error handling... message 는 404, 500 같은 어떤 에러인지 알려주는 역할로
+					alert("error: "+ message)
+				},
+				success:function(word){
+					$('#result1').html(word);
+				}	
+			}) // ajax
+		}); // click
+		
+		
+		$("#exec2").click(function() {
+			var fname = $("#fname").val();
+			/*
+			 입력된 #fname 데이타를 받아와 서버에 요청하고
+			 그 결과를 #result2에 출력하는 코드를 구현하세요 
+			*/
+			
+			$.ajax({
+				type:'post',
+				url: 'main.do',
+				data: "fname="+fname+'&action=kickCount',   // main.do로 안하고 MainServlet 으로 씀 , Servlet이 하나니까 요청을 구분할 action 을 넘겨줬어야 했는데
+				
+				error: function(xhr, status, message){  // message 는 404, 500 같은 에러 메세지
+					alert("error: "+ message)
+				},
+				success:function(result){
+					$('#result2').html(result);
+				}
+			});// ajax
+		}); //click
+	}); // function
+</script>
+<style type="text/css">
+	.quest {
+		padding: 50px;
+		width: 500px; height: 250px;
+        border: 2px dashed blue;
+		background-color: rgb(234,234,234);
+	}	
+	.kick{
+		display: inline-block;
+		width : 100px;
+	}
+	#result1, #result2 {//이부분
+		font-size : 1.5em;
+		color: red;
+	}
+	.btn{
+		width : 100px;
+	}
+	h2{
+		height: 50px;
+	}
+	div{
+		margin: 10px;//이부분
+	}
+	#ins{
+		vertical-align: top;
+	}
+
+</style>
+</head>
+<body>
+	<div id="q1"  class="quest">
+			<h2>단어세기</h2>
+			<div><span id="ins">입력 문자열 : </span><textarea  id="words" cols="45" rows="5"></textarea> </div>
+			<div><input type="button" id="exec1" class="btn" value="실 행"> 가장 많이 나온 단어 :	<span id="result1"  ></span></div>			
+	</div>
+	<div id="q2" class="quest">
+		<h2>Kickboard</h2>
+		<div><span class="kick">입력 파일명:</span><input type="text" id="fname" ></div>
+		<div> <input type="button"	id="exec2" class="btn" value="실 행"> 갈수 있는 경로의 수 : <span id="result2">  </span></div>
+	</div>
+</body>
+</html>
